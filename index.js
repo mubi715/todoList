@@ -1,50 +1,63 @@
 import inquirer from "inquirer";
-let myList = ["mubi", "marij"];
+let myList = ["mubi", "marij", "mudasir", "ali"];
 async function todoHandler(myList) {
-    console.log("welcome to todos list");
-    let operator = await inquirer.prompt({
-        type: "list",
-        message: "what do you want to do",
-        name: "operation",
-        choices: ["add", "view", "update", "delete"],
-    });
-    switch (operator.operation) {
-        case "add":
-            {
+    while (true) {
+        let operator = await inquirer.prompt({
+            type: "list",
+            message: "Select the operation you want to perform",
+            name: "operation",
+            choices: ["add", "view", "update", "delete", "exit"],
+        });
+        switch (operator.operation) {
+            case "add": {
                 let add = await inquirer.prompt({
                     type: "input",
                     name: "addItem",
-                    message: "plz add item ",
+                    message: "Please add an item:",
                 });
                 myList.push(add.addItem);
                 console.log(myList);
+                break;
             }
-            break;
-        case "view":
-            // Code for "view" case
-            break;
-        case "update":
-            // Code for "update" case
-            let update1 = await inquirer.prompt({
-                type: "list",
-                message: "which item you want to update",
-                name: "updateItem",
-                choices: myList
-            });
-            let update2 = await inquirer.prompt({
-                type: "input",
-                message: "write the updated value",
-                name: "updateItem1",
-            });
-            let newMyList = myList.filter(item => item != update1.updateItem);
-            myList = [...newMyList, update2.updateItem1];
-            console.log(myList);
-            break;
-        case "delete":
-            // Code for "delete" case
-            break;
-        default:
-        // Code to handle cases other than the ones specified above
+            case "view": {
+                console.log(myList);
+                break;
+            }
+            case "update": {
+                let update1 = await inquirer.prompt({
+                    type: "list",
+                    message: "Which item do you want to update?",
+                    name: "updateItem",
+                    choices: myList,
+                });
+                let update2 = await inquirer.prompt({
+                    type: "input",
+                    message: "Write the updated value:",
+                    name: "updateItem1",
+                });
+                let newMyList = myList.map(item => item === update1.updateItem ? update2.updateItem1 : item);
+                myList = newMyList;
+                console.log(myList);
+                break;
+            }
+            case "delete": {
+                let remove = await inquirer.prompt({
+                    type: "list",
+                    message: "Which item do you want to delete?",
+                    name: "deleteItem",
+                    choices: myList,
+                });
+                let indexOfDel = myList.indexOf(remove.deleteItem);
+                myList.splice(indexOfDel, 1);
+                console.log("Item deleted successfully.");
+                console.log(myList);
+                break;
+            }
+            case "exit": {
+                console.log("Exiting...");
+                return;
+            }
+        }
     }
 }
 todoHandler(myList);
